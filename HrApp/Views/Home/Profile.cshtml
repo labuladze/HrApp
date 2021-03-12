@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewData["Title"] = "Profile";
+}
+@model IEnumerable<HrApp.Models.Employee>
+
+<div class="container w-100">
+    <h6>Employee Info</h6>
+    <div>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+        <a asp-controller="Employee" asp-action="Create" class="btn btn-primary btn-sm float-right m-1">Add Employee</a>
+    </div>
+    <table id="myTable" class="table table-striped table-bordered table-hover w-100 table-condensed table-sm">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Date of Birth</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Id Number</th>
+                <th scope="col">Position</th>
+                <th scope="col">Status</th>
+                <th scope="col">Fired</th>
+                <th scope="col">Phone number</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.Name</td>
+                    <td>@i.Lastname</td>
+                    <td>
+                        @if (i.DateOfBirth != null)
+                        {<span>@i.DateOfBirth.Value.ToShortDateString()</span>}
+                    </td>
+                    <td>@i.Gender</td>
+                    <td>@i.IdNumber</td>
+                    <td>@i.Position</td>
+                    <td>@i.Status</td>
+                    <td>
+                        @if (i.Fierd != null)
+                        {<span>@i.Fierd.Value.ToShortDateString()</span>}
+                    </td>
+                    <td>@i.PhoneNumber</td>
+                    <td><a asp-controller="Employee" asp-action="Edit" asp-route-id="@i.Id" class="btn btn-info btn-sm">Edit</a></td>
+                    <td>
+                        <form asp-controller="Employee" asp-action="Delete" asp-route-id="@i.Id" method="post">
+                            <button class="btn btn-danger btn-sm" onclick="return DeleteConfirm()">Delete</button>
+                        </form>
+
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+    @if ((string)TempData["Added"] == "Added")
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.success("Added Successfully");
+            });
+        </script>
+    }
+    @if ((string)TempData["Updated"] == "Updated")
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.success("Updated Successfully");
+            });
+        </script>
+    }
+</div>
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            td2 = tr[i].getElementsByTagName("td")[1];
+            if (td || td2) {
+                txtValue = td.textContent || td.innerText;
+                txtValue2 = td2.textContent || td2.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1 || txtValue2.toUpperCase().indexOf(filter) > -1 ) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+<script>
+    function DeleteConfirm() {
+        if (confirm( "Are you sure you want to delete the record"))
+            return true;
+        else
+            return false;
+    }
+</script>
